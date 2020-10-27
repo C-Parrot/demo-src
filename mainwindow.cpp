@@ -513,7 +513,7 @@ void MainWindow::on_deviceAddButton_clicked()
  */
 void MainWindow::on_stopRealPlayButton_clicked()
 {
-	capturePictureTimer->stop();
+	capturePictureTimer->stop();//停止定时器
 	//Not ReapPlayStarted
 	if (m_bRealPlayStarted == false)
 	{
@@ -842,28 +842,26 @@ void MainWindow::on_alarmListButton_clicked()
 
 /*! @function Capture Picture
  * \brief MainWindow::on_capturePictureButton_clicked
- *没有登陆时，预览按钮会提醒：没有选择设备，截图按钮没有该功能。
+ *没有登陆时，预览按钮会提醒：没有选择设备。而截图按钮没有该提醒功能。
  *所以假设用户默认行为：点击预览按钮才会去点击截图。
  *
  */
 void MainWindow::on_capturePictureButton_clicked()
 {
-	QString camera_devSerial = this->m_devSerial;
+	//QString camera_devSerial = this->m_devSerial;
 	//this->capturePictureFilePath = "save_images/" + camera_devSerial;//设置保存的文件夹，m_devSerial:设备号
 	QDir *qdir = new QDir;
 	if(!qdir->exists(this->capturePictureFilePath)){ //如果路径不存在
 		qdir->mkpath(this->capturePictureFilePath); //创建文件夹
-		QSettings *cameraIni = new QSettings(this->capturePictureFilePath + "/" + camera_devSerial + ".ini", QSettings::IniFormat);//设置ini文件
-		cameraIni->setValue("/" + camera_devSerial + "/periodicTime", ui->capturePictureSpinBox->value());
 	}
-	QFileDialog::getExistingDirectory(this, tr("Open Directory"),this->capturePictureFilePath);//filedialog
-	//如果分钟改变了，更新ini文件中的值
-
-
-	int capturePictureTime = ui->capturePictureSpinBox->value();
+	QFileDialog::getExistingDirectory(this, tr("Open Directory"),this->capturePictureFilePath);//测试，filedialog，看一下文件所存路径。没其他作用。
+	QSettings *cameraIni = new QSettings(this->capturePictureFilePath + "/" + m_devSerial + ".ini", QSettings::IniFormat);//设置ini文件，不会创建ini文件
+	cameraIni->setValue("/" + m_devSerial + "/periodicTime", ui->capturePictureSpinBox->value());//如果没有ini文件，会创建ini文件
+	
 	periodic_capture_picture();//截图
-	capturePictureTime *= 60000;//预览按钮会先调用stopRealPlay，再startRealPlay
-	this->capturePictureTimer->start(capturePictureTime); //启动定时器，stop()在结束按钮那个方法中//timeout会调用截图方法periodic_capture_picture
+	int capturePictureTime = ui->capturePictureSpinBox->value();
+	capturePictureTime *= 60000;//
+	this->capturePictureTimer->start(capturePictureTime); //启动定时器，在结束按钮那个方法中//timeout会调用截图方法periodic_capture_picture（）
 	
 
     //char szTime[20] = {};  //原代码，注释掉
@@ -1627,7 +1625,7 @@ int MainWindow::startRealPlay(int videoLevel)
 	{
 		hWnd = (HWND)ui->previewWindow->winId();
 	}
-    int iRet = OpenNetStream::getInstance()->startRealPlay(m_sessionId, hWnd, devSerial, iChannelNo, safekey);
+    int iRet = OpenNetStream::getInstance()->startRealPlay(m_sessionId, hWnd, devSerial, iChannelNo, safekey);//接口，开始预览。设置属性m_devSerial
 	if(0 != iRet)
 	{
 		this->showErrInfo(tr("RealPlay"));
@@ -1637,8 +1635,7 @@ int MainWindow::startRealPlay(int videoLevel)
     m_bCloudPlayBack = false;
     m_bPlayBackStarted = false;
 
-	//this->capturePictureTimer->stop();
-	this->capturePictureFilePath = "save_images/" + m_devSerial;//设置保存的文件夹，m_devSerial:设备号
+	this->capturePictureFilePath = "save_images/" + m_devSerial;//m_devSerial:设备号。截图所保存的路径，硬编码。如果想要修改路径，修改该行
 	QString cameraIniPath = capturePictureFilePath+"/" + m_devSerial+".ini";//如果存在相机的.ini文件，读取内容设置spin值
 	QFileInfo *cameraIni = new QFileInfo(cameraIniPath);
  	if(cameraIni->exists()){ 
@@ -1650,9 +1647,6 @@ int MainWindow::startRealPlay(int videoLevel)
 	else{
 		ui->capturePictureSpinBox->setValue(5);//如果文件不存在，设置spin值为5。
 	}
-
-
-
 	return 0;
 }
 
@@ -2626,13 +2620,12 @@ void MainWindow::on_searchCloudRecordButton_clicked()
 void MainWindow::periodic_capture_picture(){
 	
 	STREAM_TIME osdTime = STREAM_TIME();
-    int iRet0 = OpenNetStream::getInstance()->getOSDTime(m_sessionId, &osdTime);//接口，获得时间信息.返回的是0或-1.
+    int iRet0 = OpenNetStream::getInstance()->getOSDTime(m_sessionId, &osdTime);//接口，获得时间信息，存储在osdTime中.接口返回的是0或-1.
     if(OPEN_SDK_NOERROR != iRet0)
     {
         this->showErrInfo(tr("Get OSD failed!"));
         return;
     } 
-
 	char szTime[40] = {};
 	sprintf(szTime, "%u%02u%02u%02u%02u%02u", osdTime.iYear, osdTime.iMonth, osdTime.iDay, osdTime.iHour, osdTime.iMinute, osdTime.iSecond);
 	QString fileName = szTime;
