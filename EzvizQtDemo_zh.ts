@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="zh_CN">
+<TS version="2.1" language="zh_CN">
 <context>
     <name>AddDevWindow</name>
     <message>
@@ -260,7 +260,7 @@
         <location filename="mainwindow.ui" line="393"/>
         <location filename="GeneratedFiles/ui_mainwindow.h" line="800"/>
         <source>CapturePic</source>
-        <translation>截图</translation>
+        <translation type="unfinished">采集周期</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="417"/>

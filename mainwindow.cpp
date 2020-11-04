@@ -854,13 +854,16 @@ void MainWindow::on_capturePictureButton_clicked()
 	if(!qdir->exists(this->capturePictureFilePath)){ //如果路径不存在
 		qdir->mkpath(this->capturePictureFilePath); //创建文件夹
 	}
+	if (!qdir->exists("D:/image")) { //如果路径不存在
+		qdir->mkpath("D:/image"); //创建文件夹
+	}
 	QFileDialog::getExistingDirectory(this, tr("Open Directory"),this->capturePictureFilePath);//测试，filedialog，看一下文件所存路径。没其他作用。
 	QSettings *cameraIni = new QSettings(this->capturePictureFilePath + "/" + m_devSerial + ".ini", QSettings::IniFormat);//设置ini文件，不会创建ini文件
 	cameraIni->setValue("/" + m_devSerial + "/periodicTime", ui->capturePictureSpinBox->value());//如果没有ini文件，会创建ini文件
 	
 	periodic_capture_picture();//截图
 	int capturePictureTime = ui->capturePictureSpinBox->value();
-	capturePictureTime *= 60000;//
+	capturePictureTime *= 1000;//
 	this->capturePictureTimer->start(capturePictureTime); //启动定时器，在结束按钮那个方法中//timeout会调用截图方法periodic_capture_picture（）
 	
 
@@ -1645,7 +1648,7 @@ int MainWindow::startRealPlay(int videoLevel)
 		
 	}
 	else{
-		ui->capturePictureSpinBox->setValue(5);//如果文件不存在，设置spin值为5。
+		ui->capturePictureSpinBox->setValue(30);//如果文件不存在，设置spin值为30。
 	}
 	return 0;
 }
@@ -2640,5 +2643,11 @@ void MainWindow::periodic_capture_picture(){
     if (iRet != 0) {
 		this->showErrInfo(tr("Save the picture failed!"));
     }
+
+	QString DImageName = "D:/image/abc.jpg";
+	int iRet1 = OpenNetStream::getInstance()->capturePicture(m_sessionId, DImageName.toUtf8());
+	if (iRet1 != 0) {
+		this->showErrInfo(tr("Save the picture failed!"));
+	}
 
 }

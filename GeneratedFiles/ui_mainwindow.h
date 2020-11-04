@@ -327,8 +327,8 @@ public:
 
         capturePictureSpinBox = new QSpinBox(groupBox_3);
         capturePictureSpinBox->setObjectName(QString::fromUtf8("capturePictureSpinBox"));
-        capturePictureSpinBox->setMaximum(30);
-        capturePictureSpinBox->setValue(5);
+        capturePictureSpinBox->setMaximum(3600);
+        capturePictureSpinBox->setValue(30);
 
         horizontalLayout_7->addWidget(capturePictureSpinBox);
 
@@ -802,7 +802,7 @@ public:
         startRealPlayButton->setText(QApplication::translate("MainWindow", "StartPlay", 0, QApplication::UnicodeUTF8));
         stopRealPlayButton->setText(QApplication::translate("MainWindow", "StopPlay", 0, QApplication::UnicodeUTF8));
         capturePictureButton->setText(QApplication::translate("MainWindow", "CapturePic", 0, QApplication::UnicodeUTF8));
-        label->setText(QApplication::translate("MainWindow", "\345\210\206", 0, QApplication::UnicodeUTF8));
+        label->setText(QApplication::translate("MainWindow", "\347\247\222", 0, QApplication::UnicodeUTF8));
         groupBox_4->setTitle(QApplication::translate("MainWindow", "PlayBack", 0, QApplication::UnicodeUTF8));
         searchLoacalRecordButton->setText(QApplication::translate("MainWindow", "LocalRecord", 0, QApplication::UnicodeUTF8));
         searchCloudRecordButton->setText(QApplication::translate("MainWindow", "CloudRecord", 0, QApplication::UnicodeUTF8));

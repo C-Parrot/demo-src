@@ -400,17 +400,17 @@
               <item>
                <widget class="QSpinBox" name="capturePictureSpinBox">
                 <property name="maximum">
-                 <number>30</number>
+                 <number>3600</number>
                 </property>
                 <property name="value">
-                 <number>5</number>
+                 <number>30</number>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QLabel" name="label">
                 <property name="text">
-                 <string>分</string>
+                 <string>秒</string>
                 </property>
                </widget>
               </item>
